@@ -11,11 +11,14 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+
 /**
  *
  * @author sqlitetutorial.net
  */
 public class App {
+    private static final Logger logger = Logger.getLogger(App.class.getName());
+    // End code for logging exercise
     // Start code for logging exercise
     static {
         // must set before the Logger
@@ -23,12 +26,12 @@ public class App {
         try {// resources\logging.properties
             LogManager.getLogManager().readConfiguration(new FileInputStream("resources/logging.properties"));
         } catch (SecurityException | IOException e1) {
+            logger.log(Level.WARNING,"SecurityException or IO Exception", e1);
             e1.printStackTrace();
         }
     }
 
-    private static final Logger logger = Logger.getLogger(App.class.getName());
-    // End code for logging exercise
+    
     
     /**
      * @param args the command line arguments
@@ -56,12 +59,20 @@ public class App {
             String line;
             int i = 1;
             while ((line = br.readLine()) != null) {
-                System.out.println(line);
-                wordleDatabaseConnection.addValidWord(i, line);
-                i++;
+                if (line.matches("^[a-z]{4}$")) {
+                    System.out.println(line);
+                    wordleDatabaseConnection.addValidWord(i, line);
+                    logger.log(Level.INFO,"valid word " + line + " added from data.txt");
+                    i++;
+                }
+                else {
+                    System.out.println("Ignored unacceptable input");
+                    logger.log(Level.SEVERE,"Ignored unacceptable input");
+                }
             }
 
         } catch (IOException e) {
+            logger.log(Level.WARNING,"Exception", e);
             System.out.println("Not able to load . Sorry!");
             System.out.println(e.getMessage());
             return;
@@ -71,21 +82,29 @@ public class App {
 
         try (Scanner scanner = new Scanner(System.in)) {
             System.out.print("Enter a 4 letter word for a guess or q to quit: ");
+
             String guess = scanner.nextLine();
 
             while (!guess.equals("q")) {
+                
                 System.out.println("You've guessed '" + guess+"'.");
-
-                if (wordleDatabaseConnection.isValidWord(guess)) { 
-                    System.out.println("Success! It is in the the list.\n");
+             
+                if (guess.matches("^[a-z]{4}$")) {
+                    if (wordleDatabaseConnection.isValidWord(guess)) { 
+                        System.out.println("Success! It is in the the list.\n");
+                        break;
+                    }else{
+                        System.out.println("Sorry. This word is NOT in the the list.\n");
+                    }
                 }else{
-                    System.out.println("Sorry. This word is NOT in the the list.\n");
+                    logger.log(Level.INFO,"User guessed invalid input: " + guess);
+                    System.out.println("Invalid input. Guess again");
                 }
-
                 System.out.print("Enter a 4 letter word for a guess or q to quit: " );
                 guess = scanner.nextLine();
             }
         } catch (NoSuchElementException | IllegalStateException e) {
+            logger.log(Level.WARNING,"NoSuchElementException or IllegalStateException", e);
             e.printStackTrace();
         }
 
