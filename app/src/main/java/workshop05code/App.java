@@ -60,7 +60,7 @@ public class App {
             int i = 1;
             while ((line = br.readLine()) != null) {
                 if (line.matches("^[a-z]{4}$")) {
-                    System.out.println(line);
+                    // System.out.println(line);
                     wordleDatabaseConnection.addValidWord(i, line);
                     logger.log(Level.INFO,"valid word " + line + " added from data.txt");
                     i++;
