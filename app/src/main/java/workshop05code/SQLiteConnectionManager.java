@@ -17,6 +17,8 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 public class SQLiteConnectionManager {
+    private static final Logger logger = Logger.getLogger(SQLiteConnectionManager.class.getName());
+
     //Start code logging exercise
     static {
         // must set before the Logger
@@ -24,11 +26,11 @@ public class SQLiteConnectionManager {
         try {// resources\logging.properties
             LogManager.getLogManager().readConfiguration(new FileInputStream("resources/logging.properties"));
         } catch (SecurityException | IOException e1) {
+            logger.log(Level.WARNING,"SecurityException or IO Exception", e1);
             e1.printStackTrace();
         }
     }
 
-    private static final Logger logger = Logger.getLogger(SQLiteConnectionManager.class.getName());
     //End code logging exercise
     
     private String databaseURL = "";
@@ -69,6 +71,7 @@ public class SQLiteConnectionManager {
 
             }
         } catch (SQLException e) {
+            logger.log(Level.WARNING,"SQLException", e);
             System.out.println(e.getMessage());
         }
     }
@@ -88,6 +91,8 @@ public class SQLiteConnectionManager {
                     return true;
                 }
             } catch (SQLException e) {
+                logger.log(Level.WARNING,"SQLException", e);
+
                 System.out.println(e.getMessage());
                 return false;
             }
@@ -113,6 +118,8 @@ public class SQLiteConnectionManager {
                 return true;
 
             } catch (SQLException e) {
+                logger.log(Level.WARNING,"SQLException", e);
+
                 System.out.println(e.getMessage());
                 return false;
             }
@@ -135,6 +142,8 @@ public class SQLiteConnectionManager {
                     pstmt.setString(2,word);
             pstmt.executeUpdate();
         } catch (SQLException e) {
+            logger.log(Level.WARNING,"SQLException", e);
+
             System.out.println(e.getMessage());
         }
 
@@ -163,6 +172,7 @@ public class SQLiteConnectionManager {
             return false;
 
         } catch (SQLException e) {
+            logger.log(Level.WARNING,"SQLException", e);
             System.out.println(e.getMessage());
             return false;
         }
